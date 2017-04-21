@@ -1,0 +1,21 @@
+{
+  "name": "alive2020",
+  "version": "0.0.0",
+  "authors": [
+    "(bradley <bradley.j.griffith@gmail.com>)",
+    "(mark <mstultz@gmail.com>)"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "latest"
+  },
+  "devDependencies": {
+  }
+}
