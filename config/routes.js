@@ -1,7 +1,7 @@
 module.exports = function(app) {
 	// API ==========================================================================
 	[
-	  "livevideos"
+	  "live_photos"
 	].forEach(function (routeName) {
 	  require("app/controllers/" + routeName)(app);
 	});

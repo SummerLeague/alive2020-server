@@ -11,10 +11,10 @@ const App = class extends Component {
     super(props);
 
     this.setupIO = this.setupIO.bind(this);
-    this.handleLivevideo = this.handleLivevideo.bind(this);
+    this.handleLivePhotos = this.handleLivePhotos.bind(this);
 
     this.state = {
-      livevideos : []
+      livePhotos : []
     };
 
     this.setupIO();
@@ -27,23 +27,26 @@ const App = class extends Component {
           },
           connection = io("", options);
 
-    connection.on("livevideo", this.handleLivevideo);
+    connection.on("livePhotos", this.handleLivePhotos);
   }
 
-  handleLivevideo(livevideos) {
-    let currentLivevideos = _.clone(this.state.livevideos).reverse();
+  handleLivePhotos(livePhotos) {
+    let currentLivePhotos = _.clone(this.state.livePhotos).reverse();
+
+    console.log(livePhotos);
 
     this.setState({
-      livevideos : _.last(_.union(currentLivevideos, livevideos), 10).reverse()
+      livePhotos : _.last(_.union(currentLivePhotos, livePhotos), 10).reverse()
     });
   }
 
   render() {
     return (
-      <form method="post" encType="multipart/form-data" action="/api/v1/livevideos">
+      <form method="post" encType="multipart/form-data" action="/api/v1/live_photos">
         <input type="file" name="thumbnail"/>
         <input type="submit"/>
       </form>
+
     );
   }
 }

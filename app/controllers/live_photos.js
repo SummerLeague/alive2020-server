@@ -1,11 +1,13 @@
+var sendLivePhoto = require("../connections/live_photos").send;
+
 // Controllers ==================================================================
 function create(req, res) {
-  console.log(req.files);
+  sendLivePhoto(req.files);
   res.send(200);
 };
 
 
 // Exports ======================================================================
 module.exports = function(app) {
-  app.post('/api/v1/livevideos', create);
+  app.post('/api/v1/live_photos', create);
 }

@@ -1,20 +1,25 @@
 // Setup ========================================================================
 var io = null,
-    newLivevideos = [];
+    newLivePhotos = [];
 
 
 // Controllers ==================================================================
-function newLivevideo (livevideo) {
-  newLivevideos.push(livevideo);
+function send (livePhoto) {
+  console.log({
+    name : livePhoto.thumbnail.fieldName,
+    path : livePhoto.thumbnail.path
+  });
+  newLivePhotos.push({
+    name : livePhoto.thumbnail.fieldName,
+    path : livePhoto.thumbnail.path
+  });
 }
 
 // Emission Event 'Loop' ==========================================================
-// NOTE: This loop is intended to improve performance by limiting the emission of
-//   tweets to clients to every tenth of a second rather than on every livevideo.
 function emit () {
-	if (newLivevideos.length) {
-	  io.sockets.emit("livevideos", newLivevideos);
-	  newLivevideos = [];
+	if (newLivePhotos.length) {
+	  io.sockets.emit("livePhotos", newLivePhotos);
+	  newLivePhotos = [];
 	}
 	// Call self. This is effectively a loop.
 	setTimeout(emit, 100);
@@ -22,7 +27,9 @@ function emit () {
 
 
 // Exports ======================================================================
-function setup (io) {
+function setup (ioConnection) {
+  io = ioConnection;
+
   io.set("heartbeat interval", 4);
 
   io.sockets.on('connection', function (socket) {
@@ -30,4 +37,7 @@ function setup (io) {
   });
 }
 
-module.exports = setup;
+module.exports = {
+  setup : setup,
+  send : send
+}
