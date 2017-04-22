@@ -17,4 +17,5 @@ node_modules
 
 .env
 
-uploads/*
+tmp/*
+public/images/live_photos/*
