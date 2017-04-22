@@ -5,14 +5,7 @@ var io = null,
 
 // Controllers ==================================================================
 function send (livePhoto) {
-  console.log({
-    name : livePhoto.thumbnail.fieldName,
-    path : livePhoto.thumbnail.path
-  });
-  newLivePhotos.push({
-    name : livePhoto.thumbnail.fieldName,
-    path : livePhoto.thumbnail.path
-  });
+  newLivePhotos.push(livePhoto);
 }
 
 // Emission Event 'Loop' ==========================================================
@@ -32,7 +25,7 @@ function setup (ioConnection) {
 
   io.set("heartbeat interval", 4);
 
-  io.sockets.on('connection', function (socket) {
+  io.sockets.on("connection", function (socket) {
     emit();
   });
 }

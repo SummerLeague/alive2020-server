@@ -1,44 +1,45 @@
 #!/usr/bin/env node
 
 // Setup ========================================================================
-var env      = require('dotenv').load(),
-    express  = require('express'),
-    config   = require('config'),
+var env      = require("dotenv").load(),
+    express  = require("express"),
+    config   = require("config"),
     app      = express(),
-    path     = require('path'),
-    server   = require('http').createServer(app),
-    io       = require('socket.io').listen(server),
-    _        = require('underscore');
+    path     = require("path"),
+    server   = require("http").createServer(app),
+    io       = require("socket.io").listen(server),
+    _        = require("underscore");
 
 
 // Configure Aapplication  ======================================================
 app.configure(function() {
-  app.use(express.favicon(path.resolve(__dirname, '../public/images/favicon.ico')));
+  app.use(express.favicon(path.resolve(__dirname, "../public/images/favicon.ico")));
   app.use(express.logger());
-  app.use(express.bodyParser({ uploadDir:'./uploads/' }));
   app.use(express.methodOverride());
-  app.use(express.static('public'));
+  app.use(express.bodyParser({ uploadDir:"./tmp/uploads/" }));
+  app.use(express.static(path.resolve(__dirname, "../live_photos")));
+  app.use(express.static(path.resolve(__dirname, "../public")));
   app.use(app.router);
 });
 
-app.configure('development', function() {
+app.configure("development", function() {
   app.use(express.errorHandler({
     dumpExceptions: true,
     showStack: true
   }));
 });
 
-app.configure('production', function() {
+app.configure("production", function() {
   app.use(express.errorHandler());
 });
 
 
 // Routes =======================================================================
-require('../config/routes')(app);
+require("../config/routes")(app);
 
 
 // Connections ==================================================================
-require('../config/connections')(io);
+require("../config/connections")(io);
 
 
 // Begin Listening ==============================================================

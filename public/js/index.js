@@ -12,9 +12,11 @@ const App = class extends Component {
 
     this.setupIO = this.setupIO.bind(this);
     this.handleLivePhotos = this.handleLivePhotos.bind(this);
+    this.readyLastLivePhoto = this.readyLastLivePhoto.bind(this);
 
     this.state = {
-      livePhotos : []
+      livePhotos : [],
+      imageStatus: "loading"
     };
 
     this.setupIO();
@@ -30,25 +32,48 @@ const App = class extends Component {
     connection.on("livePhotos", this.handleLivePhotos);
   }
 
+  handleImageLoadReady() {
+    this.setState({ imageStatus : "loaded" });
+  }
+
+  handleImageLoadError() {
+    this.setState({ imageStatus : "error" });
+  }
+
   handleLivePhotos(livePhotos) {
     let currentLivePhotos = _.clone(this.state.livePhotos).reverse();
 
-    console.log(livePhotos);
-
     this.setState({
+      imageStatus : "loading",
       livePhotos : _.last(_.union(currentLivePhotos, livePhotos), 10).reverse()
+    }, () => {
+      this.readyLastLivePhoto();
     });
+
+  }
+
+  readyLastLivePhoto() {
+    if (this.state.livePhotos.length) {
+      const lastLivePhoto = this.state.livePhotos[this.state.livePhotos.length - 1],
+            tmpImage = new Image();
+
+      tmpImage.onload = this.handleImageLoadReady.bind(this);
+      tmpImage.onerror = this.handleImageLoadError.bind(this);
+      tmpImage.src = lastLivePhoto.path;
+    }
   }
 
   render() {
-    return (
-      <form method="post" encType="multipart/form-data" action="/api/v1/live_photos">
-        <input type="file" name="thumbnail"/>
-        <input type="submit"/>
-      </form>
 
+    return (
+      <div>
+        { this.state.imageStatus == "loaded" &&
+          <img src={ this.state.livePhotos[0].path }/>
+        }
+      </div>
     );
   }
 }
+
 
 ReactDOM.render(<App />, document.querySelector(".container"));
