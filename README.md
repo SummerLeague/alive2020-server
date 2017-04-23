@@ -18,15 +18,15 @@ The node_modules directory is gitignored by default, but if you intend to copy t
 
 ## Running
 
-Start app (local): foreman start
+To give it some life, run`foreman start`.
 
 ## Development
+
+To build the react app (`public/bundle.js`) during development, run `webpack --watch`.
 
 To build css files from scss on save, from your terminal `cd` into the `/public/styles` directory and run `scss --watch .:.`.
 
 ### Sucky Stuff (Temporary)
-
-To build the react app bundle.js, run `webpack` from your terminal. You must do this any time you make changes to the webpack/react files for the time being.
 
 If you need to add npm packages, you have to delete the symlinked `app` from the `node_modules` directory, run `npm install`, and then re-link `app` to `node_modules`. Yep this blows. I'll fix later. To do it run: `cd node_modules && rm -rf app && cd ..` then `npm install` then `cd node_modules && ln -nsf ../app && cd ..`.
 
