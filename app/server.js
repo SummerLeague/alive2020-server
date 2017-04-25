@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
 // Setup ========================================================================
-var env      = require("dotenv").load(),
-    express  = require("express"),
-    config   = require("config"),
-    app      = express(),
-    path     = require("path"),
-    server   = require("http").createServer(app),
-    io       = require("socket.io").listen(server),
-    _        = require("underscore");
+var env = require("dotenv").load(),
+    express = require("express"),
+    config = require("config"),
+    app = express(),
+    path = require("path"),
+    server = require("http").createServer(app),
+    io = require("socket.io").listen(server),
+    _ = require("underscore"),
+    util = require("./util");
 
 
 // Configure Aapplication  ======================================================
@@ -16,8 +17,8 @@ app.configure(function() {
   app.use(express.favicon(path.resolve(__dirname, "../public/images/favicon.ico")));
   app.use(express.logger());
   app.use(express.methodOverride());
+  app.use(util.overrideContentType());
   app.use(express.bodyParser({ uploadDir:"./tmp/uploads/" }));
-  app.use(express.static(path.resolve(__dirname, "../live_photos")));
   app.use(express.static(path.resolve(__dirname, "../public")));
   app.use(app.router);
 });

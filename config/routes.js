@@ -3,7 +3,7 @@ module.exports = function(app) {
   [
     "live_photos"
   ].forEach(function (routeName) {
-    require("app/controllers/" + routeName)(app);
+    require("app/controllers/api/v1/" + routeName)(app);
   });
   app.use(app.router);
 
