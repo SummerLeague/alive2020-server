@@ -1,10 +1,11 @@
 var fs = require("file-system"),
     https = require("https"),
+    path = require("path"),
     BodyParser = require("body-parser"),
     jsonParser = BodyParser.json(),
     MessageValidator = require("sns-validator"),
     validator = new MessageValidator();
-    sendLivePhoto = require("../../../connections/live_photos").send;
+    sendLivePhoto = require(path.resolve("api/connections/live_photos")).send;
 
 
 // Controllers ==================================================================

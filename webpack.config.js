@@ -1,6 +1,6 @@
 module.exports = {
   entry: [
-    './public/js/index.js'
+    './public/webpack/app.js.jsx'
   ],
   output: {
     path: __dirname + '/public/',
@@ -17,7 +17,7 @@ module.exports = {
     }]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx', '.js.jsx']
   },
   devServer: {
     historyApiFallback: true,

@@ -1,9 +1,12 @@
+var path = require("path");
+
+
 module.exports = function(io) {
   // API ==========================================================================
   [
     "live_photos"
   ].forEach(function(connectionName) {
-    require("app/connections/" + connectionName).setup(io);
+    require(path.resolve("api/connections/" + connectionName)).setup(io);
   });
 
   io.sockets.on("connection", function(socket) {
