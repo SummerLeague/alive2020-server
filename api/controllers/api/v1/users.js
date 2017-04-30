@@ -12,6 +12,6 @@ function create(req, res) {
 
 
 // Exports ======================================================================
-module.exports = function(app) {
-  app.post("/api/v1/users", app.get("passport").authenticate("local-signup"), create);
+module.exports = function(app, passport) {
+  app.post("/api/v1/users", passport.authenticate("local-signup"), create);
 }

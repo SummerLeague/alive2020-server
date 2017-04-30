@@ -1,13 +1,13 @@
 var path = require("path");
 
 
-module.exports = function(app) {
+module.exports = function(app, passport) {
   // API ==========================================================================
   [
     "users",
     "live_photos"
   ].forEach(function (routeName) {
-    require(path.resolve("api/controllers/api/v1/" + routeName))(app);
+    require(path.resolve("api/controllers/api/v1/" + routeName))(app, passport);
   });
   app.use(app.router);
 
@@ -21,6 +21,6 @@ module.exports = function(app) {
 
   // Application ==================================================================
   app.get("*", function(req, res) {
-    res.sendfile("./public/index.html"); // Load the single view file (angular will handle the page changes on the front-end)
+    res.sendfile(path.resolve("public/index.html"));
   });
 };

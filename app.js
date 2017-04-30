@@ -7,56 +7,62 @@ var path = require("path"),
     config = require("config"),
     app = express(),
     server = require("http").createServer(app),
+    morgan = require("morgan"),
     io = require("socket.io").listen(server);
 
+var models = require(path.resolve(__dirname, "api/models"));
+
 var passport = require("passport"),
-    content_type = require(path.resolve(__dirname, "api/utils/content_type")),
-    models = require(path.resolve(__dirname, "api/models")),
-    configPassport = require(path.resolve(__dirname, "config/passport"));
+    configPassport = require(path.resolve(__dirname, "config/passport")),
+    contentType = require(path.resolve(__dirname, "api/utils/content_type")),
+    cookieParser = require("cookie-parser"),
+    cookieSession = require("cookie-session"),
+    bodyParser = require("body-parser");
 
 
-// Configure Aapplication  ======================================================
-app.configure(function() {
-  app.use(express.favicon(path.resolve(__dirname, "public/images/favicon.ico")));
-  app.use(express.logger());
-  app.use(express.methodOverride());
-  app.use(content_type.overrideContentType());
-  app.use(express.session({ secret : config.app.secret }));
-  app.use(express.cookieParser());
-  app.use(express.bodyParser({ uploadDir : path.resolve(__dirname, "tmp/uploads/") }));
-  app.use(express.static(path.resolve(__dirname, "public/")));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-});
+// Configure Application  =======================================================
+app.use(express.favicon(path.resolve(__dirname, "public/images/favicon.ico")));
+app.use(express.static(path.resolve(__dirname, "public/")));
+app.use(express.logger());
 
-app.configure("development", function() {
+if (app.get("env") == "development") {
+  app.use(morgan("dev"));
   app.use(express.errorHandler({
     dumpExceptions: true,
     showStack: true
   }));
-});
+}
 
-app.configure("production", function() {
-  app.use(express.errorHandler());
-});
-
+if (app.get("env") == "production") {
+  app.use(morgan("common"));
+  app.configure("production", function() {
+    app.use(express.errorHandler());
+  });
+}
 
 // Init Models ==================================================================
 models.sequelize.sync({ alter : true });
 // Create models singleton to avoid opening more than one database connection.
 app.set("models", models);
 
+
 // Passport =====================================================================
+app.use(cookieParser());
+app.use(cookieSession({ secret : config.app.secret }));
+app.use(passport.initialize());
+app.use(passport.session());
 configPassport(passport, models.User);
-app.set("passport", passport);
 
 
 // Routes =======================================================================
-require("./config/routes")(app);
+app.use(app.router);
+app.use(express.methodOverride());
+app.use(contentType.overrideContentType());
+app.use(bodyParser.urlencoded({ extended: true }));
+require("./config/routes")(app, passport);
 
 
-// Connections ==================================================================
+// Socket Connections ===========================================================
 require("./config/connections")(io);
 
 
