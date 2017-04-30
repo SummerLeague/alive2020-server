@@ -15,6 +15,7 @@ class New extends Component {
       console.log(response);
     })
     .catch(function (error) {
+      debugger;
       console.log(error);
     });
   }
@@ -26,7 +27,7 @@ class New extends Component {
           New Account
         </h1>
         <form method="post" onSubmit={ this.handleSubmit }>
-          <input type="text" name="username"/>
+          <input type="text" name="username" />
           <input type="password" name="password"/>
           <input type="submit"/>
         </form>

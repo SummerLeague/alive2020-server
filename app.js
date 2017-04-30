@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 
 // Setup ========================================================================
-var env = require("dotenv").load(),
+var path = require("path"),
+    env = require("dotenv").load(),
     express = require("express"),
     config = require("config"),
     app = express(),
-    path = require("path"),
     server = require("http").createServer(app),
-    io = require("socket.io").listen(server),
-    _ = require("underscore"),
-    content_type = require("./api/utils/content_type"),
-    models = require("./api/models"),
-    auth = require("./api/utils/auth");
+    io = require("socket.io").listen(server);
+
+var passport = require("passport"),
+    content_type = require(path.resolve(__dirname, "api/utils/content_type")),
+    models = require(path.resolve(__dirname, "api/models")),
+    configPassport = require(path.resolve(__dirname, "config/passport"));
 
 
 // Configure Aapplication  ======================================================
@@ -21,11 +22,11 @@ app.configure(function() {
   app.use(express.methodOverride());
   app.use(content_type.overrideContentType());
   app.use(express.session({ secret : config.app.secret }));
-  app.use(auth.initialize());
-  app.use(auth.session());
   app.use(express.cookieParser());
-  app.use(express.bodyParser({ uploadDir:"./tmp/uploads/" }));
+  app.use(express.bodyParser({ uploadDir : path.resolve(__dirname, "tmp/uploads/") }));
   app.use(express.static(path.resolve(__dirname, "public/")));
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.use(app.router);
 });
 
@@ -42,7 +43,13 @@ app.configure("production", function() {
 
 
 // Init Models ==================================================================
-models.sequelize.sync();
+models.sequelize.sync({ alter : true });
+// Create models singleton to avoid opening more than one database connection.
+app.set("models", models);
+
+// Passport =====================================================================
+configPassport(passport, models.User);
+app.set("passport", passport);
 
 
 // Routes =======================================================================
@@ -56,8 +63,8 @@ require("./config/connections")(io);
 // Begin Listening ==============================================================
 server.listen(config.express.port, function(error) {
   if (error) {
-    console.log("Unable to listen for connections: " + error);
+    console.log("Unable to listen for connections: %s", error);
     process.exit(10);
   }
-  console.log("Express is listening on port: " + config.express.port);
+  console.log("🌎  API is running on port: %s", config.express.port);
 });

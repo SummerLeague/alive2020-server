@@ -1,16 +1,26 @@
+var bcrypt = require("bcrypt");
+
+
 module.exports = function(sequelize, DataTypes) {
   var User = {};
 
+
   User.Schema = {
-    username : DataTypes.STRING,
-    email : DataTypes.STRING,
-    passwordHash : DataTypes.STRING,
-    passwordSalt : DataTypes.STRING,
+    username : {
+      type : DataTypes.STRING,
+      unique : true
+    },
+    email : {
+      type : DataTypes.STRING,
+      unique : true
+    },
+    password : DataTypes.STRING,
     authToken : DataTypes.STRING,
     authTokenExpiresAt : DataTypes.DATE,
     passwordResetToken : DataTypes.STRING,
     passwordResetTokenExpiresAt : DataTypes.DATE,
   };
+
 
   User.ClassMethods = {
     findByUsername : function(username, cb) {
@@ -24,10 +34,22 @@ module.exports = function(sequelize, DataTypes) {
         }
         return cb(null, null);
       });
+    },
+    generateHash : function(password) {
+      return bcrypt.hashSync(password, bcrypt.genSaltSync(16), null);
     }
   };
 
+
+  User.InstanceMethods = {
+    validPassword : function(password) {
+      return bcrypt.compareSync(password, this.password);
+    }
+  };
+
+
   return sequelize.define("User", User.Schema, {
-    classMethods: User.ClassMethods
+    classMethods : User.ClassMethods,
+    instanceMethods : User.InstanceMethods
   });
 };
