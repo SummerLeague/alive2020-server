@@ -12,7 +12,7 @@ Install packages needed for server: `npm install`
 Install packages needed for client: `bower install`
 
 ## Running
-To give it some life, run`foreman start web`.
+To give it some life, run `foreman start web`.
 
 ## Debugging
 To run the app in debugger mode, start the app with `foreman start webDebug`. This will launch a chrome inspection window that will pause on any breakpoints (`debugger` statements in your code) for inspection. Note the following:
