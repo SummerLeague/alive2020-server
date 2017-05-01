@@ -1,10 +1,4 @@
-// Middelware ===================================================================
-function notFound(req, res) {
-  res.send(404);
-}
+var exportDir = require('export-dir');
 
 
-// Exports ======================================================================
-module.exports = {
-  notFound : notFound
-};
+module.exports = exportDir(__dirname);

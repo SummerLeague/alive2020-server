@@ -1,4 +1,6 @@
-// For use by sequelize-cli
+// Note: This is for use by sequelize-cli. To see actual database
+//   connection information, see `/api/models/index.js`.
+
 module.exports = {
   "development" : {
     "database" : process.env.POSTGRES_DATABASE,

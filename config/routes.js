@@ -1,13 +1,14 @@
 var path = require("path");
 
 
-module.exports = function(app, passport) {
+module.exports = function(app) {
   // API ==========================================================================
   [
     "users",
+    "sessions",
     "live_photos"
   ].forEach(function (routeName) {
-    require(path.resolve("api/controllers/api/v1/" + routeName))(app, passport);
+    require(path.resolve("api/controllers/api/v1/" + routeName))(app);
   });
   app.use(app.router);
 

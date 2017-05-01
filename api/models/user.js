@@ -8,13 +8,57 @@ module.exports = function(sequelize, DataTypes) {
   User.Schema = {
     username : {
       type : DataTypes.STRING,
-      unique : true
+      unique : {
+        args : true,
+        msg : "Username already taken."
+      },
+      allowNull : false,
+      validate : {
+        len : {
+          args : [1, 15],
+          msg : "Username may not be more than 15 characters."
+        },
+        notEmpty : {
+          args : true,
+          msg : "Username may not be blank."
+        }
+      }
     },
     email : {
       type : DataTypes.STRING,
-      unique : true
+      unique : {
+        args : true,
+        msg : "Email already taken."
+      },
+      allowNull : false,
+      validate : {
+        isEmail : {
+          args : true,
+          msg : "That doesn't appear to be a valid email address."
+        },
+        notEmpty : {
+          args : true,
+          msg : "Email must be provided."
+        }
+      }
     },
-    password : DataTypes.STRING,
+    password : {
+      type : DataTypes.STRING,
+      allowNull : false,
+      validate : {
+        notEmpty : {
+          args : true,
+          msg : "Password may not be blank."
+        },
+        isValidLength : function(value) {
+          if (value.length < 6) {
+            throw new Error("Password must be at least 6 characters.");
+          } else if (value.length > 128) {
+            throw new Error("Password may be no longer than 128 characters.");
+          }
+        }
+      }
+    },
     authToken : DataTypes.STRING,
     authTokenExpiresAt : DataTypes.DATE,
     passwordResetToken : DataTypes.STRING,
@@ -35,8 +79,11 @@ module.exports = function(sequelize, DataTypes) {
         return cb(null, null);
       });
     },
+
     generateHash : function(password) {
-      return bcrypt.hashSync(password, bcrypt.genSaltSync(16), null);
+      var SALT_FACTOR = 5;
+
+      return bcrypt.hashSync(password, bcrypt.genSaltSync(SALT_FACTOR), null);
     }
   };
 
@@ -48,8 +95,23 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
+  User.Hooks = (function () {
+    function hashPassword(user, options, next) {
+      if (!user.changed("password")) return next();
+      user.password = sequelize.models.User.generateHash(user.get("password"));
+      next();
+    }
+
+    return {
+      beforeCreate : hashPassword,
+      beforeUpdate : hashPassword
+    }
+  })();
+
+
   return sequelize.define("User", User.Schema, {
     classMethods : User.ClassMethods,
-    instanceMethods : User.InstanceMethods
+    instanceMethods : User.InstanceMethods,
+    hooks : User.Hooks
   });
 };

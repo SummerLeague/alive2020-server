@@ -24,6 +24,8 @@ var passport = require("passport"),
 app.use(express.favicon(path.resolve(__dirname, "public/images/favicon.ico")));
 app.use(express.static(path.resolve(__dirname, "public/")));
 app.use(express.logger());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 if (app.get("env") == "development") {
   app.use(morgan("dev"));
@@ -52,14 +54,15 @@ app.use(cookieSession({ secret : config.app.secret }));
 app.use(passport.initialize());
 app.use(passport.session());
 configPassport(passport, models.User);
+// Create passport singleton so that middleware can access our configured passport.
+app.set("passport", passport);
 
 
 // Routes =======================================================================
 app.use(app.router);
 app.use(express.methodOverride());
 app.use(contentType.overrideContentType());
-app.use(bodyParser.urlencoded({ extended: true }));
-require("./config/routes")(app, passport);
+require("./config/routes")(app);
 
 
 // Socket Connections ===========================================================
