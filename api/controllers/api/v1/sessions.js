@@ -1,14 +1,9 @@
-var path = require("path"),
-    passportMiddleware = require(path.resolve("api/middleware")).passport;
-
-
 // Actions ======================================================================
 function login(req, res) {
   var models = req.app.get("models"),
       username = req.body.username,
       password = req.body.password;
-console.log(username);
-console.log(password);
+
   models.User.findOne({ where : { $or : [{ username : username }, { email : username }] } }).then(function(user) {
     if (!user || !user.validPassword(password)) {
       return res.send(422, { message : "Incorrect username or password." });
@@ -19,7 +14,7 @@ console.log(password);
         id : user.id,
         username : user.username,
         email : user.email,
-        token : user.generateJWTToken()
+        authToken : user.generateJWTToken()
       }
     });
   }).catch(function(err) {
@@ -34,21 +29,21 @@ function me(req, res) {
     user : {
       id : req.user.id,
       username : req.user.username,
-      email : req.user.email,
-      token : req.user.generateJWTToken()
+      email : req.user.email
     }
   });
 }
 
 function destroy(req, res) {
   req.logout();
-  return res.send(200, { message : "Session destroyed." });
+
+  return res.send(200, { message : "Token destroyed." });
 }
 
 
 // Exports ======================================================================
-module.exports = function(app) {
-  app.get("/api/v1/me", passportMiddleware.authenticate, me);
+module.exports = function(app, passport) {
+  app.get("/api/v1/me", passport.authenticate("authenticate-JWT"), me);
   app.post("/api/v1/login", login);
   app.get("/api/v1/logout", destroy);
 }

@@ -24,10 +24,10 @@ module.exports = function configPassport(passport, User) {
     });
   });
 
-  passport.use("authenticate", new JwtStrategy(jwtOptions, function(jwtPayload, next) {
+  passport.use("authenticate-JWT", new JwtStrategy(jwtOptions, function(jwtPayload, next) {
     User.findOne({ where : { id : jwtPayload.id } }).then(function(user) {
       if (!user) {
-        next(null, false, { message : "Invalid token." });
+        next(null, false);
         return null;
       }
 

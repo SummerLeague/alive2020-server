@@ -54,15 +54,13 @@ app.use(cookieSession({ secret : config.app.secret }));
 app.use(passport.initialize());
 app.use(passport.session());
 configPassport(passport, models.User);
-// Create passport singleton so that middleware can access our configured passport.
-app.set("passport", passport);
 
 
 // Routes =======================================================================
 app.use(app.router);
 app.use(express.methodOverride());
 app.use(contentType.overrideContentType());
-require("./config/routes")(app);
+require("./config/routes")(app, passport);
 
 
 // Socket Connections ===========================================================

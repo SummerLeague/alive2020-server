@@ -91,7 +91,7 @@ module.exports = function(sequelize, DataTypes) {
     },
 
     generateJWTToken : function() {
-      var EXPIRY = "1m"; // zeit/ms
+      var EXPIRY = "30s"; // zeit/ms
       var payload = {
             id : this.id,
             username : this.username,
