@@ -21,6 +21,9 @@ To run the app in debugger mode, start the app with `foreman start webDebug`. Th
 
 ## Development
 
+### Hitting the API
+Use Postman (Google it) with Chrome to play with the API without the mobile app.
+
 #### Webpack
 To build the react app (`public/bundle.js`) during development, run `webpack --watch`.
 
