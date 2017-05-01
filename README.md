@@ -22,7 +22,7 @@ To run the app in debugger mode, start the app with `foreman start webDebug`. Th
 ## Development
 
 ### Hitting the API
-Use Postman (Google it) with Chrome to play with the API without the mobile app.
+Use Postman (Google it) with Chrome to play with the API without the mobile app. To authenticate through the API, login using username and password at `api/v1/login` and store the response token. To make requests to authenticated routes, include a Header with the key `Authorization` and the value `JWT <token string>` in your HTTP request.
 
 #### Webpack
 To build the react app (`public/bundle.js`) during development, run `webpack --watch`.

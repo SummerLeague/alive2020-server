@@ -1,4 +1,5 @@
-var bcrypt = require("bcrypt");
+var bcrypt = require("bcrypt"),
+    jwt = require("jsonwebtoken");
 
 
 module.exports = function(sequelize, DataTypes) {
@@ -58,11 +59,7 @@ module.exports = function(sequelize, DataTypes) {
           }
         }
       }
-    },
-    authToken : DataTypes.STRING,
-    authTokenExpiresAt : DataTypes.DATE,
-    passwordResetToken : DataTypes.STRING,
-    passwordResetTokenExpiresAt : DataTypes.DATE,
+    }
   };
 
 
@@ -91,6 +88,20 @@ module.exports = function(sequelize, DataTypes) {
   User.InstanceMethods = {
     validPassword : function(password) {
       return bcrypt.compareSync(password, this.password);
+    },
+
+    generateJWTToken : function() {
+      var EXPIRY = "1m"; // zeit/ms
+      var payload = {
+            id : this.id,
+            username : this.username,
+            email : this.email
+          },
+          options = {
+            expiresIn : EXPIRY
+          };
+
+      return jwt.sign(payload, process.env.APP_SECRET, options);
     }
   };
 

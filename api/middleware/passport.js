@@ -1,8 +1,8 @@
 var passport = (function(){
 
   return {
-    login : function(req, res, next) {
-      return req.app.get("passport").authenticate("login", function (err, user, info) {
+    authenticate : function(req, res, next) {
+      return req.app.get("passport").authenticate("authenticate", function (err, user, info) {
         if (err) { return next(err) }
         if (!user) { return res.send(401, { message : info.message }); }
 

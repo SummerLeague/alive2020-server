@@ -18,7 +18,7 @@ function create(req, res, next) {
         id : this.id,
         username : this.username,
         email : this.email,
-        password : this.password
+        token : this.generateJWTToken()
       }
     });
   })

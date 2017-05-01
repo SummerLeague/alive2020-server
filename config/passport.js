@@ -1,8 +1,10 @@
 var path = require("path"),
-    passportLocal = require("passport-local"),
-    LocalStrategy = passportLocal.Strategy,
-    localStrategyOptions = {
-      passReqToCallback : true
+    passportJWT = require("passport-jwt"),
+    ExtractJwt = passportJWT.ExtractJwt,
+    JwtStrategy = passportJWT.Strategy,
+    jwtOptions = {
+      jwtFromRequest : ExtractJwt.fromAuthHeader(),
+      secretOrKey : process.env.APP_SECRET
     };
 
 
@@ -22,26 +24,19 @@ module.exports = function configPassport(passport, User) {
     });
   });
 
-  passport.use("login", new LocalStrategy(localStrategyOptions, function(req, username, password, done) {
-    User.findOne({ where : { $or : [{ username : username }, { email : username }] } }).then(function(user) {
-      var authErrorMessage = "Incorrect username or password";
+  passport.use("authenticate", new JwtStrategy(jwtOptions, function(jwtPayload, next) {
+    User.findOne({ where : { id : jwtPayload.id } }).then(function(user) {
       if (!user) {
-        done(null, false, { message : authErrorMessage });
+        next(null, false, { message : "Invalid token." });
         return null;
       }
 
-      if (!user.validPassword(password)) {
-        done(null, false, { message : authErrorMessage });
-        return null;
-      }
-
-      done(null, user);
+      next(null, user);
       return null;
     }).catch(function(err) {
-      done(err);
+      next(err);
       return null;
-    });
-
+    })
   }));
 
 };
