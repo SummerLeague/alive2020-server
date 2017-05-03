@@ -85,6 +85,8 @@ sequelize db:migrate
 ```
 4. Create a new model file, `api/models/my_model.js`, and describe your table (yes, again) including other details like class methods, instance methods, associations, etc. Think of the migration as a way to tell sequelize, the CLI, how to build your table in postgres, and the file in `api/models` as a way to describe it to sequelize as represented for use in the node app. It's kind of sucky but that's sequelize.
 
+*NOTE* When "describing" the table in the migration, you should pretty much just focus on things like attribute names, their types, whether or not they are unique, whether or not they can be null, and their default values if they have them. Things like validation and other details don't seem to be necessary until describing your model in the `api/models` model file.
+
 ##### Modifying an existing Model/Table
 1. Start by using the CLI to create a new migration for your changes.
 ```
@@ -96,6 +98,8 @@ sequelize migration:create --name=add-some-attribute-to-my-model
 sequelize db:migrate
 ```
 4. Open your model file, `api/models/my_model.js` and modify its description to match the changes you described in your migration file. Think of the migration as a way to tell sequelize, the CLI, how to build your table in postgres, and the file in `api/models` as a way to describe it to sequelize as represented for use in the node app. It's kind of sucky but that's sequelize.
+
+*NOTE* When "describing" the table in the migration, you should pretty much just focus on things like attribute names, their types, whether or not they are unique, whether or not they can be null, and their default values if they have them. Things like validation and other details don't seem to be necessary until describing your model in the `api/models` model file.
 
 #### AWS
 We will need to update this later but for now, during development if you need to test transcoding, SNS callbacks, or anything else that interacts with the server via AWS, you'll need to run `ngrok` (http://ngrok.com) pointed at the port your server is running on (likely: `ngrok http 5000`) and update the subscription in the SNS settings, which likely means deleting the old one and creating a new one. This blows I know. Ill come up with something else later. The "address" should be something like this `http://2a50f4e8.ngrok.io/api/v1/transcode_complete_webhook` for our transcode completion webhook, for example.
