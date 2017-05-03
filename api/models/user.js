@@ -7,6 +7,11 @@ module.exports = function(sequelize, DataTypes) {
 
 
   User.Schema = {
+    active : {
+      type : DataTypes.BOOLEAN,
+      allowNull : false,
+      defaultValue : true
+    },
     username : {
       type : DataTypes.STRING,
       unique : {

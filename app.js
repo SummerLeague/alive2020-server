@@ -43,7 +43,7 @@ if (app.get("env") == "production") {
 }
 
 // Init Models ==================================================================
-models.sequelize.sync({ alter : true });
+models.sequelize.sync(); // Never use force. Use migrations w/ CLI instead.
 // Create models singleton to avoid opening more than one database connection.
 app.set("models", models);
 

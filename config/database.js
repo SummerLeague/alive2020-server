@@ -1,5 +1,7 @@
 // Note: This is for use by sequelize-cli. To see actual database
 //   connection information, see `/api/models/index.js`.
+require('dotenv').config();
+
 
 module.exports = {
   "development" : {

@@ -20,13 +20,17 @@ var fs = require("fs"),
 
 
 var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, {
-  host: config.db.host,
-  dialect: "postgres",
+  host : config.db.host,
+  dialect : "postgres",
 
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000
+  define : {
+    freezeTableName : true
+  },
+
+  pool : {
+    max : 5,
+    min : 0,
+    idle : 10000
   }
 });
 
