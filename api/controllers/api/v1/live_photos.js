@@ -6,7 +6,7 @@ var fs = require("file-system"),
     MessageValidator = require("sns-validator"),
     validator = new MessageValidator();
     sendLivePhoto = require(path.resolve("api/connections/live_photos")).send;
-
+validator.encoding = 'utf8';
 
 // Controllers ==================================================================
 function create(req, res) {

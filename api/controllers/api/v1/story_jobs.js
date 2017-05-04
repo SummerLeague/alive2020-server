@@ -1,6 +1,10 @@
-var MessageValidator = require("sns-validator"),
+var https = require("https"),
+    BodyParser = require("body-parser"),
+    jsonParser = BodyParser.json(),
+    MessageValidator = require("sns-validator"),
     validator = new MessageValidator(),
     Sequelize = require("sequelize");
+
 
 // Controllers ==================================================================
 function create(req, res) {
@@ -19,7 +23,7 @@ function create(req, res) {
   })
   .catch(Sequelize.ValidationError, function (err) {
     var error = err.errors[0],
-        message = error ? error.message : "Invalid parameters.";
+        message = error ? error.message : "Invalid parameters."
 
     return res.send(422, { message : message });
   }).catch(function(err) {

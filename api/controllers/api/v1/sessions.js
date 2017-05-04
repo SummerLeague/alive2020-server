@@ -23,17 +23,6 @@ function login(req, res) {
   });
 }
 
-function me(req, res) {
-  console.log("Me is %s", req.user.username);
-  return res.send(200, {
-    user : {
-      id : req.user.id,
-      username : req.user.username,
-      email : req.user.email
-    }
-  });
-}
-
 function destroy(req, res) {
   req.logout();
 
@@ -42,8 +31,7 @@ function destroy(req, res) {
 
 
 // Exports ======================================================================
-module.exports = function(app, passport) {
-  app.get("/api/v1/me", passport.authenticate("authenticate-JWT"), me);
+module.exports = function(app) {
   app.post("/api/v1/login", login);
   app.get("/api/v1/logout", destroy);
 }

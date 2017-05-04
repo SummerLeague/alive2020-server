@@ -24,8 +24,6 @@ var passport = require("passport"),
 app.use(express.favicon(path.resolve(__dirname, "public/images/favicon.ico")));
 app.use(express.static(path.resolve(__dirname, "public/")));
 app.use(express.logger());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 if (app.get("env") == "development") {
   app.use(morgan("dev"));
@@ -52,14 +50,16 @@ app.set("models", models);
 app.use(cookieParser());
 app.use(cookieSession({ secret : config.app.secret }));
 app.use(passport.initialize());
-app.use(passport.session());
 configPassport(passport, models.User);
 
 
 // Routes =======================================================================
-app.use(app.router);
 app.use(express.methodOverride());
 app.use(contentType.overrideContentType());
+app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended : true }));
+app.use(app.router);
 require("./config/routes")(app, passport);
 
 
