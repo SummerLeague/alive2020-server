@@ -6,7 +6,7 @@ module.exports = function(app, passport) {
   [
     "users",
     "sessions",
-    "live_photos"
+    "story_jobs"
   ].forEach(function (routeName) {
     require(path.resolve("api/controllers/api/v1/" + routeName))(app, passport);
   });

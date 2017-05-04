@@ -20,13 +20,13 @@ module.exports = function(sequelize, DataTypes) {
       },
       allowNull : false,
       validate : {
-        len : {
-          args : [1, 15],
-          msg : "Username may not be more than 15 characters."
-        },
         notEmpty : {
           args : true,
           msg : "Username may not be blank."
+        },
+        len : {
+          args : [1, 15],
+          msg : "Username may not be more than 15 characters."
         }
       }
     },
@@ -38,13 +38,13 @@ module.exports = function(sequelize, DataTypes) {
       },
       allowNull : false,
       validate : {
-        isEmail : {
-          args : true,
-          msg : "That doesn't appear to be a valid email address."
-        },
         notEmpty : {
           args : true,
           msg : "Email must be provided."
+        },
+        isEmail : {
+          args : true,
+          msg : "That doesn't appear to be a valid email address."
         }
       }
     },
@@ -97,6 +97,7 @@ module.exports = function(sequelize, DataTypes) {
 
     generateJWTToken : function() {
       var EXPIRY = "30s"; // zeit/ms
+
       var payload = {
             id : this.id,
             username : this.username,

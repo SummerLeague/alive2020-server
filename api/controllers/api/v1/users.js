@@ -10,7 +10,7 @@ function create(req, res, next) {
   models.User.create({
     username : username,
     email : email,
-    password : password,
+    password : password
   })
   .then(function() {
     return res.send(200, {

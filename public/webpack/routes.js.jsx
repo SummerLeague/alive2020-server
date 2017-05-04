@@ -9,9 +9,9 @@ import { UserShow } from "./components/User";
 const Routes = (props) => (
   <Router {...props} history ={ browserHistory }>
     <Route path="/" component={ Home }/>
-	<Route path="/account/new" component={ Account }/>
-	<Route path="/account/login" component={ Account }/>
-	<Route path="/:username" component={ UserShow }/>
+  	<Route path="/account/new" component={ Account }/>
+  	<Route path="/account/login" component={ Account }/>
+  	<Route path="/:username" component={ UserShow }/>
   </Router>
 );
 
