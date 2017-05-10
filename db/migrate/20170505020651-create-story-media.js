@@ -2,31 +2,32 @@
 
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable("StoryJob", {
+    return queryInterface.createTable("StoryMedia", {
       id : {
         allowNull : false,
         autoIncrement : true,
         primaryKey : true,
         type : Sequelize.INTEGER
       },
-      active : {
-        type : Sequelize.BOOLEAN,
+      key : {
         allowNull : false,
-        defaultValue : true
-      },
-      referenceId : {
-        type : Sequelize.STRING,
-        allowNull : false,
-        unique : true
-      },
-      rawResponse : {
-        type : Sequelize.TEXT
-      },
-      responseState : {
         type : Sequelize.STRING
       },
-      responseReceivedAt : {
-        type : Sequelize.DATE
+      type : {
+        allowNull : false,
+        type : Sequelize.STRING
+      },
+      width : {
+        allowNull : false,
+        type : Sequelize.INTEGER
+      },
+      height : {
+        allowNull : false,
+        type : Sequelize.INTEGER
+      },
+      duration : {
+        allowNull : false,
+        type : Sequelize.INTEGER
       },
       createdAt : {
         allowNull : false,
@@ -36,17 +37,17 @@ module.exports = {
         allowNull : false,
         type : Sequelize.DATE
       },
-      userId : {
+      storyId : {
         allowNull : false,
         type : Sequelize.INTEGER,
         references : {
-          model : "User",
+          model : "Story",
           key : "id"
         }
       }
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable("StoryJob");
+    return queryInterface.dropTable("StoryMedia");
   }
 };

@@ -2,7 +2,7 @@
 
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable("StoryJob", {
+    return queryInterface.createTable("Story", {
       id : {
         allowNull : false,
         autoIncrement : true,
@@ -14,19 +14,15 @@ module.exports = {
         allowNull : false,
         defaultValue : true
       },
-      referenceId : {
+      primaryStory : {
+        type : Sequelize.BOOLEAN,
+        allowNull : false,
+        defaultValue : false
+      },
+      outputKeyPrefix : {
         type : Sequelize.STRING,
         allowNull : false,
         unique : true
-      },
-      rawResponse : {
-        type : Sequelize.TEXT
-      },
-      responseState : {
-        type : Sequelize.STRING
-      },
-      responseReceivedAt : {
-        type : Sequelize.DATE
       },
       createdAt : {
         allowNull : false,
@@ -43,10 +39,18 @@ module.exports = {
           model : "User",
           key : "id"
         }
+      },
+      storyJobId : {
+        allowNull : false,
+        type : Sequelize.INTEGER,
+        references : {
+          model : "StoryJob",
+          key : "id"
+        }
       }
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable("StoryJob");
+    return queryInterface.dropTable("Story");
   }
 };

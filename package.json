@@ -27,6 +27,7 @@
     "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-beta.1",
     "crypto": "^0.0.3",
+    "deasync": "^0.1.9",
     "dotenv": "^2.0.0",
     "export-dir": "^0.1.2",
     "express": "^3.21.2",

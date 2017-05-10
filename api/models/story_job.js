@@ -16,35 +16,61 @@ module.exports = function(sequelize, DataTypes) {
       allowNull : false,
       unique : true
     },
-    transcodeComplete : {
-      type : DataTypes.BOOLEAN,
-      allowNull : false,
-      defaultValue : false
+    rawResponse : {
+      type : DataTypes.TEXT
     },
-    transcodeCompletedAt : {
+    responseState : {
+      type : DataTypes.STRING
+    },
+    responseReceivedAt : {
       type : DataTypes.DATE,
       allowNull : true
-    },
-    userId : {
-      allowNull : false,
-      type : DataTypes.INTEGER,
-      references : {
-        model : "User",
-        key : "id"
-      }
     }
   };
 
 
   StoryJob.ClassMethods = {
+    associate: function(models) {
+      models.StoryJob.belongsTo(models.User, {
+        as : "user",
+        foreignKey : "userId"
+      });
+      models.StoryJob.hasOne(models.Story, {
+        as : "storyJob",
+        foreignKey : "storyJobId"
+      });
+    }
   };
 
 
   StoryJob.InstanceMethods = {
+    forPrimaryStory : function() {
+      var storyJob = this;
+
+      return new Promise(function(resolve, reject) {
+        sequelize.models.StoryJob.count({
+          where : {
+            id : {
+              $not : storyJob.id
+            },
+            responseState : "COMPLETED",
+            userId : storyJob.userId,
+            createdAt : {
+              $gt : Date.parse(storyJob.createdAt)
+            }
+          }
+        }).then(function(count) {
+          console.log("COUNT =======> " + count);
+          resolve(count == 0);
+        }).catch(function(err) {
+          reject(err);
+        });
+      });
+    }
   };
 
 
-  StoryJob.Hooks = (function () {
+  StoryJob.Hooks = (function() {
     function generateReferenceId(storyJob, options, next) {
       storyJob.referenceId = uuidV4();
       next();

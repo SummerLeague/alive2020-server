@@ -1,5 +1,5 @@
 // Actions ======================================================================
-function login(req, res) {
+function login(req, res, next) {
   var models = req.app.get("models"),
       username = req.body.username,
       password = req.body.password;

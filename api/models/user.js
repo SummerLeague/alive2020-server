@@ -69,6 +69,17 @@ module.exports = function(sequelize, DataTypes) {
 
 
   User.ClassMethods = {
+    associate: function(models) {
+      models.User.hasMany(models.StoryJob, {
+        as : "user",
+        foreignKey : "userId"
+      });
+      models.User.hasMany(models.Story, {
+        as : "user",
+        foreignKey : "userId"
+      });
+    },
+
     findByUsername : function(username, cb) {
       process.nextTick(function() {
         for (var i = 0, len = records.length; i < len; i++) {
@@ -96,7 +107,7 @@ module.exports = function(sequelize, DataTypes) {
     },
 
     generateJWTToken : function() {
-      var EXPIRY = "30s"; // zeit/ms
+      var EXPIRY = "8h"; // zeit/ms
 
       var payload = {
             id : this.id,
@@ -112,7 +123,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  User.Hooks = (function () {
+  User.Hooks = (function() {
     function hashPassword(user, options, next) {
       if (!user.changed("password")) return next();
       user.password = sequelize.models.User.generateHash(user.get("password"));
