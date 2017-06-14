@@ -6,7 +6,6 @@ module.exports = function(app, passport) {
   [
     "users",
     "sessions",
-    "live_photos",
     "story_jobs",
   ].forEach(function (routeName) {
     require(path.resolve("api/controllers/api/v1/" + routeName))(app, passport);
@@ -21,8 +20,8 @@ module.exports = function(app, passport) {
   });
 
 
-  // Application ==================================================================
+  // Everything Else ==============================================================
   app.get("*", function(req, res) {
-    res.sendfile(path.resolve("public/index.html"));
+    res.send(404);
   });
 };

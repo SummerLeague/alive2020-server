@@ -42,7 +42,7 @@ function transcode_complete_webhook(req, res, next) {
       var err = new Error("Failed to find active StoryJob object with referenceId: " + referenceId);
       throw(err);
     }
-
+console.log(req.snsMessage.Message);
     return storyJob.update({
       active : false,
       rawResponse : req.snsMessage.Message,
@@ -73,6 +73,7 @@ function transcode_complete_webhook(req, res, next) {
                   width : output.width,
                   height : output.height,
                   duration : output.duration,
+                  url : story.urlForMediaWithKey(output.key),
                   storyId : story.id
                 }, { transaction : t });
 

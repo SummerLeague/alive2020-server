@@ -21,8 +21,6 @@ var passport = require("passport"),
 
 
 // Configure Application  =======================================================
-app.use(express.favicon(path.resolve(__dirname, "public/images/favicon.ico")));
-app.use(express.static(path.resolve(__dirname, "public/")));
 app.use(express.logger());
 
 if (app.get("env") == "development") {
@@ -61,10 +59,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(app.router);
 require("./config/routes")(app, passport);
-
-
-// Socket Connections ===========================================================
-require("./config/connections")(io);
 
 
 // Begin Listening ==============================================================
