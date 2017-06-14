@@ -1,7 +1,6 @@
 {
   "scripts": {
     "dokku": {
-      "postdeploy": "sequelize db:migrate;"
     }
   }
 }
