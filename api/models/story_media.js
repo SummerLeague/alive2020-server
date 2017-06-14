@@ -1,9 +1,16 @@
+var config = require("config");
+
+
 module.exports = function(sequelize, DataTypes) {
   var StoryMedia = {};
 
 
   StoryMedia.Schema = {
     key : {
+      allowNull : false,
+      type : DataTypes.STRING
+    },
+    url : {
       allowNull : false,
       type : DataTypes.STRING
     },
@@ -47,12 +54,8 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  StoryMedia.InstanceMethods = {
-  };
-
-
   StoryMedia.Hooks = (function() {
-    function setFileType(storyMedia, options, next) {
+    function setFileTypeAndUrl(storyMedia, options, next) {
       if (storyMedia.changed("key")) {
         storyMedia.type = sequelize.models.StoryMedia.extensionForKey(storyMedia.key);
       }
@@ -60,7 +63,7 @@ module.exports = function(sequelize, DataTypes) {
     }
 
     return {
-      beforeValidate : setFileType
+      beforeValidate : setFileTypeAndUrl
     }
   })();
 

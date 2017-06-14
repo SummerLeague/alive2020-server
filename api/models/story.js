@@ -1,3 +1,6 @@
+var config = require("config");
+
+
 module.exports = function(sequelize, DataTypes) {
   var Story = {};
 
@@ -40,6 +43,9 @@ module.exports = function(sequelize, DataTypes) {
 
 
   Story.InstanceMethods = {
+    urlForMediaWithKey : function(key) {
+      return ["http://s3.amazonaws.com", config.aws.s3OutputBucket, this.outputKeyPrefix, key].join("/");
+    }
   };
 
 

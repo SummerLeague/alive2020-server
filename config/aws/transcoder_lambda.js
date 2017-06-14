@@ -9,16 +9,11 @@ var eltr = new AWS.ElasticTranscoder({
 });
 
 exports.handler = function(event, context) {
-  console.log('Executing Elastic Transcoder Orchestrator');
+  console.log('Executing Elastic Transcoder');
 
   var bucket = event.Records[0].s3.bucket.name,
       key = event.Records[0].s3.object.key,
       pipelineId = '1492982809700-knyyu2';
-
-  // if (bucket !== 'sourcebucket') {
-  //   context.fail('Incorrect Video Input Bucket. Expected: sourcebucket Got:' + bucket);
-  //   return;
-  // }
 
   var srcKey = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ")), //the object may have spaces
       newKey = key.split('.')[0],
@@ -50,6 +45,6 @@ exports.handler = function(event, context) {
     } else {
       console.log(data);
     }
-  context.succeed('Job well done');
+  context.succeed('Elastic Transcoder Completed');
   });
 };

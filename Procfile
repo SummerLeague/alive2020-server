@@ -1,2 +1,2 @@
-web: npm run build; node app.js
-webDebug: npm -run build; node-debug app.js
+web: node app.js
+webDebug: node-debug app.js

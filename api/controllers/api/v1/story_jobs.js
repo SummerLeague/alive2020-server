@@ -73,6 +73,7 @@ function transcode_complete_webhook(req, res, next) {
                   width : output.width,
                   height : output.height,
                   duration : output.duration,
+                  url : story.urlForMediaWithKey(output.key),
                   storyId : story.id
                 }, { transaction : t });
 
@@ -87,6 +88,8 @@ function transcode_complete_webhook(req, res, next) {
         console.log("Story creation complete for referenceId: '" + storyJob.referenceId + "'");
         res.send(200);
       });
+    } else {
+      res.send(200);
     }
   }).catch(function(err) {
     console.log("Error encountered processing transcode_complete_webhook:");
