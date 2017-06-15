@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dokku": {
-      "postdeploy": "dokku run alive2020-api sequelize db:migrate"
+      "postdeploy": "sequelize db:migrate"
     }
   }
 }
