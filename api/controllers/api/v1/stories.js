@@ -4,7 +4,7 @@ var path = require("path");
 // Actions ======================================================================
 function primaryStory(req, res, next) {
   var models = req.app.get("models");
-debugger;
+
   models.User.findOne({ where : { id : req.params.user_id } }).then(function(user) {
     if (!user) {
       return res.send(404);
@@ -12,9 +12,15 @@ debugger;
 
     user.primaryStory().then(function (primaryStory) {
       if (primaryStory) {
+        req.app.render("story", { data : primaryStory }, function(err, storyJson) {
+          if (err) {
+            throw(err);
+          }
 
-        debugger;
-
+          return res.send(200, {
+            story : storyJson
+          });
+        });
       } else {
         return res.send(200, {
           story : null

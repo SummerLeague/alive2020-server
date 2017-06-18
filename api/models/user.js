@@ -130,7 +130,8 @@ module.exports = function(sequelize, DataTypes) {
             userId : user.id,
             primaryStory : true,
             active : true
-          }
+          },
+          include: [{ model : sequelize.models.StoryMedia, as : "storyMedia" }]
         }).then(function(primaryStory) {
           resolve(primaryStory);
         }).catch(function(err) {

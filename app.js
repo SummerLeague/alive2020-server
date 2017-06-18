@@ -7,8 +7,7 @@ var path = require("path"),
     config = require("config"),
     app = express(),
     server = require("http").createServer(app),
-    morgan = require("morgan"),
-    io = require("socket.io").listen(server);
+    morgan = require("morgan");
 
 var models = require(path.resolve(__dirname, "api/models"));
 
@@ -17,7 +16,8 @@ var passport = require("passport"),
     contentType = require(path.resolve(__dirname, "api/utils/content_type")),
     cookieParser = require("cookie-parser"),
     cookieSession = require("cookie-session"),
-    bodyParser = require("body-parser");
+    bodyParser = require("body-parser"),
+    viewEngine = require("express-json-views");
 
 
 // Configure Application  =======================================================
@@ -58,6 +58,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
 app.use(app.router);
 require("./config/routes")(app, passport);
+
+
+// Views ========================================================================
+app.engine("json", viewEngine({
+  helpers : require(path.resolve(__dirname, "api/views/helpers"))
+}));
+app.set("views", path.resolve(__dirname, "api/views"));
+app.set("view engine", "json");
 
 
 // Begin Listening ==============================================================
