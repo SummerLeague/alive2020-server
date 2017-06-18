@@ -36,7 +36,7 @@ module.exports = function(sequelize, DataTypes) {
         foreignKey : "userId"
       });
       models.StoryJob.hasOne(models.Story, {
-        as : "storyJob",
+        as : "story",
         foreignKey : "storyJobId"
       });
     }

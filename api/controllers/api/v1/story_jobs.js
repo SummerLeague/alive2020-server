@@ -4,7 +4,7 @@ var path = require("path"),
     Sequelize = require("sequelize");
 
 
-// Controllers ==================================================================
+// Actions ======================================================================
 function create(req, res, next) {
   var models = req.app.get("models"),
       userId = req.user.id;

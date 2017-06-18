@@ -71,11 +71,11 @@ module.exports = function(sequelize, DataTypes) {
   User.ClassMethods = {
     associate: function(models) {
       models.User.hasMany(models.StoryJob, {
-        as : "user",
+        as : "storyJobs",
         foreignKey : "userId"
       });
       models.User.hasMany(models.Story, {
-        as : "user",
+        as : "stories",
         foreignKey : "userId"
       });
     },
@@ -119,6 +119,24 @@ module.exports = function(sequelize, DataTypes) {
           };
 
       return jwt.sign(payload, process.env.APP_SECRET, options);
+    },
+
+    primaryStory : function() {
+      var user = this;
+
+      return new Promise(function(resolve, reject) {
+        sequelize.models.Story.findOne({
+          where : {
+            userId : user.id,
+            primaryStory : true,
+            active : true
+          }
+        }).then(function(primaryStory) {
+          resolve(primaryStory);
+        }).catch(function(err) {
+          reject(err);
+        });
+      });
     }
   };
 

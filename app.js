@@ -26,8 +26,8 @@ app.use(express.logger());
 if (app.get("env") == "development") {
   app.use(morgan("dev"));
   app.use(express.errorHandler({
-    dumpExceptions: true,
-    showStack: true
+    dumpExceptions : true,
+    showStack : true
   }));
 }
 
@@ -39,7 +39,6 @@ if (app.get("env") == "production") {
 }
 
 // Init Models ==================================================================
-models.sequelize.sync(); // Never use force. Use migrations w/ CLI instead.
 // Create models singleton to avoid opening more than one database connection.
 app.set("models", models);
 

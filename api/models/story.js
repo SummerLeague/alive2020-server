@@ -35,7 +35,7 @@ module.exports = function(sequelize, DataTypes) {
         foreignKey : "storyJobId"
       });
       models.Story.hasMany(models.StoryMedia, {
-        as : "story",
+        as : "storyMedia",
         foreignKey : "storyId"
       });
     }
