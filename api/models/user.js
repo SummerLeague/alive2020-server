@@ -3,10 +3,10 @@ var bcrypt = require("bcrypt"),
 
 
 module.exports = function(sequelize, DataTypes) {
-  var User = {};
+  var userParams = {};
 
 
-  User.Schema = {
+  userParams.Schema = {
     active : {
       type : DataTypes.BOOLEAN,
       allowNull : false,
@@ -68,7 +68,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  User.ClassMethods = {
+  userParams.ClassMethods = {
     associate: function(models) {
       models.User.hasMany(models.StoryJob, {
         as : "storyJobs",
@@ -101,7 +101,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  User.InstanceMethods = {
+  userParams.InstanceMethods = {
     validPassword : function(password) {
       return bcrypt.compareSync(password, this.password);
     },
@@ -131,7 +131,7 @@ module.exports = function(sequelize, DataTypes) {
             primaryStory : true,
             active : true
           },
-          include: [{ model : sequelize.models.StoryMedia, as : "storyMedia" }]
+          include : [{ model : sequelize.models.StoryMedia, as : "storyMedia" }]
         }).then(function(primaryStory) {
           resolve(primaryStory);
         }).catch(function(err) {
@@ -142,7 +142,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  User.Hooks = (function() {
+  userParams.Hooks = (function() {
     function hashPassword(user, options, next) {
       if (!user.changed("password")) return next();
       user.password = sequelize.models.User.generateHash(user.get("password"));
@@ -156,9 +156,11 @@ module.exports = function(sequelize, DataTypes) {
   })();
 
 
-  return sequelize.define("User", User.Schema, {
-    classMethods : User.ClassMethods,
-    instanceMethods : User.InstanceMethods,
-    hooks : User.Hooks
+  var User = sequelize.define("User", userParams.Schema, {
+    classMethods : userParams.ClassMethods,
+    instanceMethods : userParams.InstanceMethods,
+    hooks : userParams.Hooks
   });
+
+  return User;
 };

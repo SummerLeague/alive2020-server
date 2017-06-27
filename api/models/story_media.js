@@ -2,10 +2,10 @@ var config = require("config");
 
 
 module.exports = function(sequelize, DataTypes) {
-  var StoryMedia = {};
+  var storyMediaParams = {};
 
 
-  StoryMedia.Schema = {
+  storyMediaParams.Schema = {
     key : {
       allowNull : false,
       type : DataTypes.STRING
@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  StoryMedia.ClassMethods = {
+  storyMediaParams.ClassMethods = {
     associate : function(models) {
       models.StoryMedia.belongsTo(models.Story, {
         as : "story",
@@ -54,7 +54,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  StoryMedia.Hooks = (function() {
+  storyMediaParams.Hooks = (function() {
     function setFileTypeAndUrl(storyMedia, options, next) {
       if (storyMedia.changed("key")) {
         storyMedia.type = sequelize.models.StoryMedia.extensionForKey(storyMedia.key);
@@ -68,9 +68,11 @@ module.exports = function(sequelize, DataTypes) {
   })();
 
 
-  return sequelize.define("StoryMedia", StoryMedia.Schema, {
-    classMethods : StoryMedia.ClassMethods,
-    instanceMethods : StoryMedia.InstanceMethods,
-    hooks : StoryMedia.Hooks
+  var StoryMedia = sequelize.define("StoryMedia", storyMediaParams.Schema, {
+    classMethods : storyMediaParams.ClassMethods,
+    instanceMethods : storyMediaParams.InstanceMethods,
+    hooks : storyMediaParams.Hooks
   });
+
+  return StoryMedia;
 };
