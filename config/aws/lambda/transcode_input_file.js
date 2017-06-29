@@ -1,4 +1,15 @@
 "use strict";
+/*
+  About:
+
+  This lambda function is triggered when a file is added to our input bucket. The function is designed
+  to do the following:
+    1. Trigger an elastic transcoder pipeline in order to transcode our input file to 720p mp4 and
+       720p webm.
+    2. (Not handled here) Completion of this transcoding process triggers an SNS that triggers another
+       lambda function. See cleanup_input_file_lambda.js in app codebase.
+*/
+
 
 var AWS = require("aws-sdk");
 
@@ -7,8 +18,6 @@ var s3 = new AWS.S3();
 var eltr = new AWS.ElasticTranscoder({
   region : "us-east-1"
 });
-
-var sns = new AWS.SNS();
 
 exports.handler = function(event, context) {
   console.log("Executing Elastic Transcoder");
@@ -19,6 +28,7 @@ exports.handler = function(event, context) {
 
   var srcKey = decodeURIComponent(key.replace(/\+/g, " ")), // the object may have spaces
       newKey = key.split(".")[0],
+      originalExtension = key.split(".")[1],
       eltrParams = {
         PipelineId : pipelineId,
         OutputKeyPrefix : newKey + "/",
@@ -52,25 +62,6 @@ exports.handler = function(event, context) {
       return;
     }
 
-    var snsMessage = JSON.stringify({
-          bucket : bucket,
-          key : key
-        }),
-        snsParams = {
-          Message : snsMessage,
-          Subject : "Input Bucket Cleanup SNS",
-          TopicArn : "arn:aws:sns:us-east-1:164154420546:alive2020-bradley-s3-input-bucket-cleanup"
-        };
-
-    sns.publish(snsParams, function(err, data) {
-      if (err) {
-        console.log("Error sending SNS for pipeline with id '" + pipelineId + " and for input key '" + newKey + "'");
-        console.log(err, err.stack); // an error occurred
-        // Note: We do not return or fail here, as the transcode was still successful
-        //   and an error at this step should not prevent the server from being notified.
-      }
-
-      context.succeed("Elastic Transcoder Completed");
-    });
+    context.succeed("Elastic Transcoder Completed");
   });
 };
