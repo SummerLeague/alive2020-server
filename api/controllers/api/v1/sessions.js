@@ -9,13 +9,16 @@ function login(req, res, next) {
       return res.send(422, { message : "Incorrect username or password." });
     }
 
-    return res.send(200, {
-      user : {
-        id : user.id,
-        username : user.username,
-        email : user.email,
-        authToken : user.generateJWTToken()
+    req.app.render("user", { data : user }, function(err, userJson) {
+      if (err) {
+        throw(err);
       }
+
+      userJson.authToken = user.generateJWTToken();
+
+      return res.send(200, {
+        user : userJson
+      });
     });
   }).catch(function(err) {
     console.log(err);

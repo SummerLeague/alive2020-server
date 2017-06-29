@@ -4,7 +4,7 @@ var path = require("path"),
     Sequelize = require("sequelize");
 
 
-// Controllers ==================================================================
+// Actions ======================================================================
 function create(req, res, next) {
   var models = req.app.get("models"),
       userId = req.user.id;
@@ -12,10 +12,10 @@ function create(req, res, next) {
   models.StoryJob.create({
     userId : userId
   })
-  .then(function() {
+  .then(function(storyJob) {
     return res.send(200, {
       storyJob : {
-        referenceId : this.referenceId
+        referenceId : storyJob.referenceId
       }
     });
   })
@@ -29,10 +29,12 @@ function create(req, res, next) {
   });
 };
 
-function transcode_complete_webhook(req, res, next) {
+function awsStoryUploadCompleteWebhook(req, res, next) {
   var models = req.app.get("models"),
       message = JSON.parse(req.snsMessage.Message),
-      referenceId = message.outputKeyPrefix.slice(0, -1); // Ends in "/". Remove that.
+      referenceId = message.referenceId;
+
+console.log(req.snsMessage);
 
   models.StoryJob.findOne({
     where : { $and : [ { referenceId : referenceId }, { active : true } ] }
@@ -92,7 +94,7 @@ function transcode_complete_webhook(req, res, next) {
       res.send(200);
     }
   }).catch(function(err) {
-    console.log("Error encountered processing transcode_complete_webhook:");
+    console.log("Error encountered processing awsStoryUploadCompleteWebhook:");
     console.log(err);
     return res.send(200); // AWS doesn't need to know of error at this point. It was a successful request.
   });
@@ -102,5 +104,5 @@ function transcode_complete_webhook(req, res, next) {
 // Exports ======================================================================
 module.exports = function(app, passport) {
   app.post("/api/v1/story_jobs", passport.authenticate("authenticate-JWT"), create);
-  app.post("/api/v1/story_jobs/transcode_complete_webhook", verifySNSNotification, transcode_complete_webhook);
+  app.post("/api/v1/story_jobs/aws_story_upload_complete_webhook", verifySNSNotification, awsStoryUploadCompleteWebhook);
 }

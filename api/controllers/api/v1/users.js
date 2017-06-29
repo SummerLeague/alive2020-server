@@ -1,5 +1,6 @@
 var Sequelize = require("sequelize");
 
+
 // Actions ======================================================================
 function create(req, res, next) {
   var models = req.app.get("models"),
@@ -12,14 +13,17 @@ function create(req, res, next) {
     email : email,
     password : password
   })
-  .then(function() {
-    return res.send(200, {
-      user : {
-        id : this.id,
-        username : this.username,
-        email : this.email,
-        authToken : this.generateJWTToken()
+  .then(function(user) {
+    req.app.render("user", { data : user }, function(err, userJson) {
+      if (err) {
+        throw(err);
       }
+
+      userJson.authToken = user.generateJWTToken();
+
+      return res.send(200, {
+        user : userJson
+      });
     });
   })
   .catch(Sequelize.ValidationError, function (err) {

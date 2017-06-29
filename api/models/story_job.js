@@ -2,10 +2,10 @@ var uuidV4 = require("uuid/v4");
 
 
 module.exports = function(sequelize, DataTypes) {
-  var StoryJob = {};
+  var storyJobParams = {};
 
 
-  StoryJob.Schema = {
+  storyJobParams.Schema = {
     active : {
       type : DataTypes.BOOLEAN,
       allowNull : false,
@@ -29,21 +29,21 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  StoryJob.ClassMethods = {
+  storyJobParams.ClassMethods = {
     associate: function(models) {
       models.StoryJob.belongsTo(models.User, {
         as : "user",
         foreignKey : "userId"
       });
       models.StoryJob.hasOne(models.Story, {
-        as : "storyJob",
+        as : "story",
         foreignKey : "storyJobId"
       });
     }
   };
 
 
-  StoryJob.InstanceMethods = {
+  storyJobParams.InstanceMethods = {
     forPrimaryStory : function() {
       var storyJob = this;
 
@@ -70,7 +70,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  StoryJob.Hooks = (function() {
+  storyJobParams.Hooks = (function() {
     function generateReferenceId(storyJob, options, next) {
       storyJob.referenceId = uuidV4();
       next();
@@ -82,9 +82,11 @@ module.exports = function(sequelize, DataTypes) {
   })();
 
 
-  return sequelize.define("StoryJob", StoryJob.Schema, {
-    classMethods : StoryJob.ClassMethods,
-    instanceMethods : StoryJob.InstanceMethods,
-    hooks : StoryJob.Hooks
+  var StoryJob = sequelize.define("StoryJob", storyJobParams.Schema, {
+    classMethods : storyJobParams.ClassMethods,
+    instanceMethods : storyJobParams.InstanceMethods,
+    hooks : storyJobParams.Hooks
   });
+
+  return StoryJob;
 };

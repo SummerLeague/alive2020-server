@@ -2,10 +2,10 @@ var config = require("config");
 
 
 module.exports = function(sequelize, DataTypes) {
-  var Story = {};
+  var storyParams = {};
 
 
-  Story.Schema = {
+  storyParams.Schema = {
     active : {
       type : DataTypes.BOOLEAN,
       allowNull : false,
@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
 
-  Story.ClassMethods = {
+  storyParams.ClassMethods = {
     associate : function(models) {
       models.Story.belongsTo(models.User, {
         as : "user",
@@ -35,21 +35,21 @@ module.exports = function(sequelize, DataTypes) {
         foreignKey : "storyJobId"
       });
       models.Story.hasMany(models.StoryMedia, {
-        as : "story",
+        as : "storyMedia",
         foreignKey : "storyId"
       });
     }
   };
 
 
-  Story.InstanceMethods = {
+  storyParams.InstanceMethods = {
     urlForMediaWithKey : function(key) {
       return ["http://s3.amazonaws.com", config.aws.s3OutputBucket, this.outputKeyPrefix, key].join("/");
     }
   };
 
 
-  Story.Hooks = (function() {
+  storyParams.Hooks = (function() {
     function setToPrimaryStory(story, options, next) {
       sequelize.models.StoryJob.findOne({
         where : { id : story.storyJobId }
@@ -94,9 +94,11 @@ module.exports = function(sequelize, DataTypes) {
   })();
 
 
-  return sequelize.define("Story", Story.Schema, {
-    classMethods : Story.ClassMethods,
-    instanceMethods : Story.InstanceMethods,
-    hooks : Story.Hooks
+  var Story = sequelize.define("Story", storyParams.Schema, {
+    classMethods : storyParams.ClassMethods,
+    instanceMethods : storyParams.InstanceMethods,
+    hooks : storyParams.Hooks
   });
+
+  return Story;
 };
