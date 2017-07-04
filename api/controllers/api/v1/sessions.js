@@ -6,7 +6,7 @@ function login(req, res, next) {
 
   models.User.findOne({ where : { $or : [{ username : username }, { email : username }] } }).then(function(user) {
     if (!user || !user.validPassword(password)) {
-      return res.send(422, { message : "Incorrect username or password." });
+      return res.send(422, { status: 422, message : "Incorrect username or password." });
     }
 
     req.app.render("user", { data : user }, function(err, userJson) {

@@ -35,9 +35,6 @@ Exit the postgres shell and create a new file in the root of this directory call
 #### Packages
 Install packages needed for server: `npm install`
 
-Install packages needed for client: `bower install`
-
-
 #### Database Part 2 / Sequelize CLI
 Before running the app, you'll want to use the sequelize CLI to create our tables in your postgres database.
 Install the CLI using `npm install -g sequelize-cli` (if not already installed) and then run the following"
@@ -56,12 +53,6 @@ To run the app in debugger mode, start the app with `foreman start webDebug`. Th
 2. Node-debug is a little slow. You dont want to be using this for all of your development purposes.
 
 ## Development
-
-#### Webpack
-To build the react app (`public/bundle.js`) during development, run `webpack --watch`.
-
-#### SCSS
-To build css files from scss on save, from your terminal `cd` into the `/public/styles` directory and run `scss --watch .:.`.
 
 #### Hitting the API
 Use Postman (Google it) with Chrome to play with the API without the mobile app.

@@ -10,7 +10,7 @@ StoriesSearchService.prototype = (function() {
   function searchQueryForRequest(req) {
     var models = req.app.get("models"),
         searchParams = {
-          userId : req.params.userId,
+          userId : req.query.userId,
           active : true
         },
         idParams = {
@@ -73,6 +73,7 @@ StoriesSearchService.prototype = (function() {
       var models = this.req.app.get("models");
 
       return new Promise(_.bind(function(resolve, reject) {
+        console.log(this.query);
         models.Story.findAll(this.query)
         .then(_.bind(function(stories) {
           this.req.app.render("story", { data : stories }, function(err, storiesJson) {
