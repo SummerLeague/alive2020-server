@@ -12,7 +12,7 @@ function index(req, res, next) {
 
   models.User.findOne({ where : { $or : [{ id : userId }, { username : username  }]}}).then(function(user) {
     if (!user) {
-      return res.send(404, { status : 404, message : "No user found for the received paramaters." });
+      return res.send(404, { status : 404, message : "No user found for the received parameters." });
     }
 
     // TODO/Dev Note: This service stuff is temporary and sloppy with this userId manipulation. Fix this but do it at the right time.
@@ -40,7 +40,7 @@ function primaryStory(req, res, next) {
 
   models.User.findOne({ where : { $or : [{ id : userId  }, { username : username  }]}}).then(function(user) {
     if (!user) {
-      return res.send(404, { status : 404, message : "No user found for the received paramaters." });
+      return res.send(404, { status : 404, message : "No user found for the received parameters." });
     }
 
     user.primaryStory().then(function (primaryStory) {
