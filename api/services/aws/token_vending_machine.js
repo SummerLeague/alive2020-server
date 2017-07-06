@@ -51,10 +51,10 @@ TokenVendingMachine.prototype = (function () {
           }
 
           var credentials = {
-            AccessKeyId : data.Credentials.AccessKeyId,
-            SecretAccessKey : data.Credentials.SecretAccessKey,
-            SessionToken : data.Credentials.SessionToken,
-            Expiration : data.Credentials.Expiration
+            accessKeyId : data.Credentials.AccessKeyId,
+            secretAccessKey : data.Credentials.SecretAccessKey,
+            sessionToken : data.Credentials.SessionToken,
+            expiration : data.Credentials.Expiration
           }
 
           resolve(credentials);
