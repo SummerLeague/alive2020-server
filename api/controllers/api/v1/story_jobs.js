@@ -1,7 +1,8 @@
 var path = require("path"),
+    Sequelize = require("sequelize"),
     snsMiddleware = require(path.resolve("api/middleware")).aws_sns,
     verifySNSNotification = snsMiddleware.verifySNSNotification,
-    Sequelize = require("sequelize");
+    TokenVendingMachine = require(path.resolve("api/services/aws/token_vending_machine"));
 
 
 // Actions ======================================================================
@@ -13,10 +14,24 @@ function create(req, res, next) {
     userId : userId
   })
   .then(function(storyJob) {
-    return res.send(200, {
-      storyJob : {
-        referenceId : storyJob.referenceId
-      }
+    var tokenVendingMachine = new TokenVendingMachine();
+
+    tokenVendingMachine.getStoryCreationAccessCredentials()
+    .then(function (credentials) {
+
+      return res.send(200, {
+        storyJob : {
+          referenceId : storyJob.referenceId
+        },
+        aws : {
+          credentials : credentials
+        }
+      });
+    })
+    .catch(function (err) {
+      console.log("Unable to fetch bucket access credentials for StoryJob id '" + storyJob.id + "'");
+      console.log(err);
+      return res.send(500, { status : 500, message : "Unable to fetch bucket access credentials." });
     });
   })
   .catch(Sequelize.ValidationError, function (err) {
@@ -33,8 +48,6 @@ function awsStoryUploadCompleteWebhook(req, res, next) {
   var models = req.app.get("models"),
       message = JSON.parse(req.snsMessage.Message),
       referenceId = message.referenceId;
-
-console.log(req.snsMessage);
 
   models.StoryJob.findOne({
     where : { $and : [ { referenceId : referenceId }, { active : true } ] }

@@ -14,6 +14,8 @@ module.exports = {
   aws : {
     accessKeyId : process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey : process.env.AWS_SECRET_ACCESS_KEY,
+    storyCreationUserAccessKeyId : process.env.AWS_STORY_CREATION_USER_ACCESS_KEY_ID,
+    storyCreationUserSecretAccessKey : process.env.AWS_STORY_CREATION_USER_SECRET_ACCESS_KEY,
     s3InputBucket : process.env.S3_INPUT_BUCKET,
     s3OutputBucket : process.env.S3_OUTPUT_BUCKET
   }

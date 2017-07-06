@@ -1,6 +1,3 @@
-var config = require("config");
-
-
 module.exports = function(sequelize, DataTypes) {
   var storyMediaParams = {};
 
