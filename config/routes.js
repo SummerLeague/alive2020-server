@@ -14,13 +14,6 @@ module.exports = function(app, passport) {
   app.use(app.router);
 
 
-  // Error Handling ===============================================================
-  app.use(function(err, req, res, next) {
-    console.error(err.stack);
-    res.send(500, "Something broke!");
-  });
-
-
   // Everything Else ==============================================================
   app.get("*", function(req, res) {
     res.send(404);

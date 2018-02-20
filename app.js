@@ -25,17 +25,10 @@ app.use(express.logger());
 
 if (app.get("env") == "development") {
   app.use(morgan("dev"));
-  app.use(express.errorHandler({
-    dumpExceptions : true,
-    showStack : true
-  }));
 }
 
 if (app.get("env") == "production") {
   app.use(morgan("common"));
-  app.configure("production", function() {
-    app.use(express.errorHandler());
-  });
 }
 
 // Init Models ==================================================================
@@ -56,7 +49,6 @@ app.use(contentType.overrideContentType());
 app.use(bodyParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
-app.use(app.router);
 require("./config/routes")(app, passport);
 
 
@@ -66,6 +58,18 @@ app.engine("json", viewEngine({
 }));
 app.set("views", path.resolve(__dirname, "api/views"));
 app.set("view engine", "json");
+
+
+// Error Handling ===============================================================
+
+if (app.get("env") == "development") {
+  app.use(function(err) {
+    console.log(err);
+  });
+}
+app.use(function(err, req, res, next) {
+  res.send(500, "Something went wrong.");
+});
 
 
 // Begin Listening ==============================================================
