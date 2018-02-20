@@ -48,9 +48,15 @@ sequelize db:migrate
 To give it some life, run `foreman start web`.
 
 ## Debugging
-To run the app in debugger mode, start the app with `foreman start webDebug`. This will launch a chrome inspection window that will pause on any breakpoints (`debugger` statements in your code) for inspection. Note the following:
-1. There will be an immediate breakpoint thrown on startup at the first line of code in our app.js. I'm unsure why node-debug does this but it appears to be standard. Simply click the console's "continue" icon to continue running the app.
-2. Node-debug is a little slow. You dont want to be using this for all of your development purposes.
+To run the app in debugger mode, do the following:
+
+1. Start the app with `foreman start webDebug`.
+2. Open chrome and navigate to `chrome://inspect` in the address bar.
+3. Click the Open dedicated DevTools for Node
+
+This window will pause on all breakpoints, etc.
+
+When you kill and restart node, the window will automatically reconnect to it.
 
 ## Development
 
