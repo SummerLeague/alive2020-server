@@ -58,6 +58,10 @@ This window will pause on all breakpoints, etc.
 
 When you kill and restart node, the window will automatically reconnect to it.
 
+#### Console (Terminal) Usage
+
+You can also access a terminal console for our node app by running `node console.js` in the terminal. From here you will have access to any modules attached to the REPL context. Currently this is basic DB access through Sequelize.
+
 ## Development
 
 #### Hitting the API
