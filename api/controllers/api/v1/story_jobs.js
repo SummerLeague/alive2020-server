@@ -12,13 +12,10 @@ function create(req, res, next) {
 
   models.StoryJob.create({
     userId : userId
-  })
-  .then(function(storyJob) {
+  }).then(function(storyJob) {
     var tokenVendingMachine = new TokenVendingMachine();
 
-    tokenVendingMachine.getStoryCreationAccessCredentials()
-    .then(function (credentials) {
-
+    tokenVendingMachine.getStoryCreationAccessCredentials().then(function (credentials) {
       return res.send(200, {
         storyJob : {
           referenceId : storyJob.referenceId
@@ -27,14 +24,12 @@ function create(req, res, next) {
           credentials : credentials
         }
       });
-    })
-    .catch(function (err) {
+    }).catch(function (err) {
       console.log("Unable to fetch bucket access credentials for StoryJob id '" + storyJob.id + "'");
       console.log(err);
       return res.send(500, { status : 500, message : "Unable to fetch bucket access credentials." });
     });
-  })
-  .catch(Sequelize.ValidationError, function (err) {
+  }).catch(Sequelize.ValidationError, function (err) {
     var error = err.errors[0],
         message = error ? error.message : "Invalid parameters."
 

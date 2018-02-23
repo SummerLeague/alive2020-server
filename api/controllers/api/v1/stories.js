@@ -3,14 +3,16 @@ var path = require("path"),
 
 
 // Actions ======================================================================
-function index(req, res, next) {
+async function index(req, res, next) {
   var models = req.app.get("models");
 
   // TODO: Improve and servicify.
   var userId = isNaN(req.query.userId) ? null : req.query.userId;
   var username = req.query.username && String(req.query.username);
 
-  models.User.findOne({ where : { $or : [{ id : userId }, { username : username  }]}}).then(function(user) {
+  try {
+    var user = await models.User.findOne({ where : { $or : [{ id : userId }, { username : username  }]}});
+
     if (!user) {
       return res.send(404, { status : 404, message : "No user found for the received parameters." });
     }
@@ -20,54 +22,48 @@ function index(req, res, next) {
 
     var searchService = new StoriesSearchService(req);
 
-    searchService.search().then(function (responseBody) {
-      return res.send(200, responseBody);
-    }).catch(function(err) {
-      throw(err);
-    });
-  }).catch(function(err) {
-    console.log(err);
+    var responseBody = await searchService.search();
+
+    return res.send(200, responseBody);
+  } catch (err) {
     next(err);
-  });
+  }
 }
 
-function primaryStory(req, res, next) {
+async function primaryStory(req, res, next) {
   var models = req.app.get("models");
 
   // TODO: Improve and servicify.
   var userId = isNaN(req.query.userId) ? null : req.query.userId;
   var username = req.query.username && String(req.query.username);
 
-  models.User.findOne({ where : { $or : [{ id : userId  }, { username : username  }]}}).then(function(user) {
+  try {
+    var user = await models.User.findOne({ where : { $or : [{ id : userId  }, { username : username  }]}});
+
     if (!user) {
       return res.send(404, { status : 404, message : "No user found for the received parameters." });
     }
 
-    user.primaryStory().then(function (primaryStory) {
-      if (primaryStory) {
-        req.app.render("story", { data : primaryStory }, function(err, storyJson) {
-          if (err) {
-            throw(err);
-          }
+    var primaryStory = await user.primaryStory();
 
-          return res.send(200, {
-            story : storyJson
-          });
-        });
-      } else {
+    if (primaryStory) {
+      req.app.render("story", { data : primaryStory }, function(err, storyJson) {
+        if (err) {
+          throw(err);
+        }
+
         return res.send(200, {
-          story : null
+          story : storyJson
         });
-      }
-    }).catch(function(err) {
-      throw(err);
-    });
-
-
-  }).catch(function(err) {
-    console.log(err);
+      });
+    } else {
+      return res.send(200, {
+        story : null
+      });
+    }
+  } catch (err) {
     next(err);
-  });
+  }
 }
 
 
